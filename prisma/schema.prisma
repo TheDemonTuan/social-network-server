@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
 }
 
 model User {
@@ -17,6 +17,7 @@ model User {
   username      String   @unique @default(cuid()) @db.VarChar(25)
   avatar        String   @default("") @db.VarChar(255)
   cover         String   @default("") @db.VarChar(255)
+  bio           String   @default("") @db.Text()
   email         String   @unique @db.VarChar(50)
   password      String   @db.VarChar(255)
   gender        Int      @db.TinyInt()
@@ -24,4 +25,53 @@ model User {
   date_of_birth DateTime @db.DateTime(6)
   created_at    DateTime @default(now()) @db.DateTime(6)
   updated_at    DateTime @default(now()) @db.DateTime(6)
+
+  posts          Post[]
+  post_likes     PostLike[]
+  main_user_id   Friend[]   @relation("main_user_id")
+  list_friend_id Friend[]   @relation("list_friend_id")
+
+  @@map("users")
 }
+
+model Post {
+  id         Int      @id @default(autoincrement())
+  user_id    String   @db.VarChar(36)
+  content    String   @db.Text()
+  created_at DateTime @default(now()) @db.DateTime(6)
+  updated_at DateTime @default(now()) @db.DateTime(6)
+
+  post_likes PostLike[]
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("posts")
+}
+
+model PostLike {
+  post_id    Int      @db.Int()
+  user_id    String   @db.VarChar(36)
+  created_at DateTime @default(now()) @db.DateTime(6)
+  updated_at DateTime @default(now()) @db.DateTime(6)
+
+  user User @relation(fields: [user_id], references: [id])
+  post Post @relation(fields: [post_id], references: [id])
+
+  @@id([post_id, user_id])
+  @@map("post_likes")
+}
+
+model Friend {
+  user_id    String   @db.VarChar(36)
+  friend_id  String   @db.VarChar(36)
+  status     Int      @db.TinyInt()
+  created_at DateTime @default(now()) @db.DateTime(6)
+  updated_at DateTime @default(now()) @db.DateTime(6)
+
+  main_user_id   User @relation(fields: [user_id], references: [id], name: "main_user_id")
+  list_friend_id User @relation(fields: [friend_id], references: [id], "list_friend_id")
+
+  @@id([user_id, friend_id])
+  @@map("friends")
+}
+

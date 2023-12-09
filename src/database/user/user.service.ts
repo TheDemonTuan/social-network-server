@@ -1,9 +1,9 @@
-import { PrismaService } from "../../prisma/prisma.service";
+import { PrismaService } from "@/prisma/prisma.service";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 
 @Injectable()
-export class UserService {
+export class DBUserService {
   constructor(private readonly prismaService: PrismaService) {}
 
   public async findUnique(params: { where: Prisma.UserWhereUniqueInput; select?: Prisma.UserSelect }) {

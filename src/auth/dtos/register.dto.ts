@@ -1,4 +1,4 @@
-import { IsEmail, IsInt, IsNotEmpty, IsNumberString, IsPhoneNumber, IsStrongPassword, Max, Min } from "class-validator";
+import { IsDateString, IsEmail, IsInt, IsNotEmpty, IsNumberString, IsPhoneNumber, IsStrongPassword, Max, Min } from "class-validator";
 import { IsVietnameseString } from "../../common/validation/is-vietnamese-string.validator";
 import { Transform } from "class-transformer";
 
@@ -23,20 +23,9 @@ export class RegisterDto {
   @IsNotEmpty({ message: "Phone number is required" })
   readonly phone: string;
 
-  @IsInt({ message: "Invalid birth day" })
-  @Transform(({ value }) => parseInt(value))
-  @IsNotEmpty({ message: "Birth day is required" })
-  readonly birth_day: number;
-
-  @IsInt({ message: "Invalid birth month" })
-  @Transform(({ value }) => parseInt(value))
-  @IsNotEmpty({ message: "Birth month is required" })
-  readonly birth_month: number;
-
-  @IsInt({ message: "Invalid birth year" })
-  @Transform(({ value }) => parseInt(value))
-  @IsNotEmpty({ message: "Birth year is required" })
-  readonly birth_year: number;
+  @IsDateString(undefined, { message: "Invalid birth day" })
+  @IsNotEmpty({ message: "Date of birth is required" })
+  readonly dob: Date;
 
   @IsInt({ message: "Invalid gender" })
   @Transform(({ value }) => parseInt(value))
